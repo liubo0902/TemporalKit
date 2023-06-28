@@ -13,6 +13,7 @@ from collections import deque
 import scripts.berry_utility as utilityb
 import cv2
 import scripts.optical_flow_raft as raft
+from modules import shared
 
 # Replace with the actual path to your image file and folder
 x_path = "./init.png"
@@ -21,6 +22,8 @@ temp_folder = "./temp"
 frame_count = 0
 
 img2imgurl = "http://localhost:7860/sdapi/v1/img2img"
+if shared.cmd_opts.just_ui:
+    img2imgurl = '/'.join([shared.cmd_opts.server_path, "sdapi/v1/img2img"])
 
 output_folder = "output"
 os.makedirs(output_folder, exist_ok=True)
@@ -136,6 +139,8 @@ def gethedfromsd(image_path,resolution):
     #    image = base64.b64encode(f.read()).decode("utf-8")
     image_smol = utilityb.resize_base64_image(image_path,resolution,resolution)
     url = "http://127.0.0.1:7860/controlnet/detect"
+    if shared.cmd_opts.just_ui:
+        url = '/'.join([shared.cmd_opts.server_path, "controlnet/detect"])
     data2 = {
         "controlnet_module": "hed",
         "controlnet_input_images": [image_smol],
